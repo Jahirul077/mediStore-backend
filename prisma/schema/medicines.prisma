@@ -1,0 +1,38 @@
+model Medicines {
+    id           String   @id @default(uuid())
+    title        String   @db.VarChar(300)
+    genericName  String?  @db.VarChar(300)
+    strength     String?  @db.VarChar(50)
+    description  String   @db.Text
+    image        String
+    manufacturer String   @db.VarChar(200)
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    inventories SellerInventory[]
+    reviews     Review[]
+
+    // Foreign Key
+    categoriesId String
+    categories   Categories @relation(fields: [categoriesId], references: [id])
+
+    @@map("medicines")
+}
+
+model SellerInventory {
+    id        String   @id @default(uuid())
+    price     Decimal  @db.Decimal(10, 2)
+    stock     Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    sellerId String
+    seller   User   @relation(fields: [sellerId], references: [id])
+
+    medicinesId String
+    medicines   Medicines @relation(fields: [medicinesId], references: [id])
+
+    orderItems OrderItem[]
+
+    @@map("seller inventory")
+}

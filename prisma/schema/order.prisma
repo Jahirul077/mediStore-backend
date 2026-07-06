@@ -1,0 +1,29 @@
+model Order {
+    id               String      @id @default(uuid())
+    customerId       String
+    customer         User        @relation(fields: [customerId], references: [id])
+    totalAmount      Decimal     @db.Decimal()
+    shipping_Address String
+    status           OrderStatus @default(PLACED)
+    createdAt        DateTime    @default(now())
+    updatedAt        DateTime    @updatedAt
+    orderItems       OrderItem[]
+
+    @@map("order")
+}
+
+model OrderItem {
+    id        String   @id @default(uuid())
+    quantity  Int
+    price     Decimal  @db.Decimal(10, 2)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    orderId String
+    order   Order  @relation(fields: [orderId], references: [id])
+
+    sellerInventoryId String
+    sellerInventory   SellerInventory @relation(fields: [sellerInventoryId], references: [id])
+
+    @@map("order item")
+}

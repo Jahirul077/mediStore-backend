@@ -1,0 +1,10 @@
+mkdir hello-prisma
+cd hello-prisma
+npm init -y
+npm install typescript tsx @types/node --save-dev
+npx tsc --init
+npm add prisma @types/pg --save-dev
+npm @prisma/client @prisma/adapter-pg pg dotenv
+npx prisma init --datasource-provider postgresql --output ../generated/prisma
+npm add express cors
+npm add -D @types/node
