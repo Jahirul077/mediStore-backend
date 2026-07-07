@@ -95,7 +95,31 @@ const signInUser = async (payload: any) => {
   };
 };
 
+const getCurrentUser = async (id: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      emailVerified: true,
+      image: true,
+      role: true,
+      phone: true,
+      status: true,
+      createdAt: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error("User does not exist anymore");
+  }
+
+  return user;
+};
+
 export const authService = {
   signUpUser,
   signInUser,
+  getCurrentUser,
 };
