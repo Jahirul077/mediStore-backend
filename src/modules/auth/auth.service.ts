@@ -26,7 +26,7 @@ const signUpUser = async (payload: any) => {
       name,
       email,
       password: hashedPassword,
-      role: Role.CUSTOMER,
+      role: role || Role.CUSTOMER,
       phone,
     },
     select: {

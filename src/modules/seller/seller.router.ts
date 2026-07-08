@@ -11,4 +11,22 @@ router.post(
   sellerController.addMedicineToInventory,
 );
 
+router.get(
+  "/medicines",
+  auth(Role.SELLER),
+  sellerController.getSellerInventory,
+);
+
+router.patch(
+  "/medicines/:id",
+  auth(Role.SELLER),
+  sellerController.updateMedicineInInventory,
+);
+
+router.delete(
+  "/medicines/:id",
+  auth(Role.SELLER),
+  sellerController.deleteMedicineFromInventory,
+);
+
 export const sellerRouter = router;
