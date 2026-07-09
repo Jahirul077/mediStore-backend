@@ -7,25 +7,25 @@ const router = express.Router();
 
 router.post(
   "/medicines",
-  auth(Role.SELLER),
+  auth(Role.SELLER, Role.ADMIN),
   sellerController.addMedicineToInventory,
 );
 
 router.get(
   "/medicines",
-  auth(Role.SELLER),
+  auth(Role.SELLER, Role.ADMIN),
   sellerController.getSellerInventory,
 );
 
 router.patch(
   "/medicines/:id",
-  auth(Role.SELLER),
+  auth(Role.SELLER, Role.ADMIN),
   sellerController.updateMedicineInInventory,
 );
 
 router.delete(
   "/medicines/:id",
-  auth(Role.SELLER),
+  auth(Role.SELLER, Role.ADMIN),
   sellerController.deleteMedicineFromInventory,
 );
 

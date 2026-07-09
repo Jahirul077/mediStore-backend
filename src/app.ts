@@ -5,6 +5,7 @@ import { sellerRouter } from "./modules/seller/seller.router";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 import { medicinesRouter } from "./modules/Medicines/medicines.router";
 import { categoriesRouter } from "./modules/categories/categories.router";
+import { orderRouter } from "./modules/Order/order.router";
 
 const app: Application = express();
 
@@ -18,6 +19,8 @@ app.use("/api/seller", sellerRouter);
 app.use("/api/medicines", medicinesRouter);
 
 app.use("/api/categories", categoriesRouter);
+
+app.use("/api/orders", orderRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

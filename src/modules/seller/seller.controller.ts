@@ -5,7 +5,7 @@ import { AuthRequest } from "../../middlewares/auth";
 const addMedicineToInventory = async (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const sellerId = req.user?.id;
@@ -32,7 +32,7 @@ const addMedicineToInventory = async (
 const getSellerInventory = async (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const sellerId = req.user?.id;
@@ -55,7 +55,7 @@ const getSellerInventory = async (
 const updateMedicineInInventory = async (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const sellerId = req.user?.id;
@@ -84,7 +84,7 @@ const updateMedicineInInventory = async (
 const deleteMedicineFromInventory = async (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const sellerId = req.user?.id;
@@ -98,7 +98,6 @@ const deleteMedicineFromInventory = async (
     res.status(200).json({
       success: true,
       message: "Medicine deleted from inventory successfully",
-      data: result,
     });
   } catch (error: any) {
     next(error);
