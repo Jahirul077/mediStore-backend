@@ -12,10 +12,9 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
 
-
 app.use("/api/seller", sellerRouter);
 
-app.use("/api", medicinesRouter);
+app.use("/api/medicines", medicinesRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
