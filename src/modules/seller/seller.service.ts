@@ -149,6 +149,7 @@ const deleteMedicineFromInventory = async (
     },
   });
 };
+ 
 
 export const sellerService = {
   addMedicineToInventory,
