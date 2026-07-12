@@ -139,15 +139,94 @@ const getOrderById = async (
     throw new Error("Order not found");
   }
 
-  if (user.role === "CUSTOMER" && order.customerId == user.id) {
+  if (user.role === "CUSTOMER" && order.customerId !== user.id) {
     throw new Error("Unauthorized");
   }
 
   return order;
 };
 
+const getSellerOrders = async (sellerId: string) => {
+  return await prisma.order.findMany({
+    where: {
+      orderItems: {
+        some: {
+          sellerInventory: {
+            sellerId: sellerId,
+          },
+        },
+      },
+    },
+    include: {
+      orderItems: {
+        where: {
+          sellerInventory: {
+            sellerId: sellerId,
+          },
+        },
+        include: {
+          sellerInventory: {
+            include: {
+              medicines: true,
+            },
+          },
+        },
+      },
+      customer: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+};
+
+const updateOrderStatus = async (
+  orderId: string,
+  user: { id: string; role: string },
+  status: any,
+) => {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: {
+      orderItems: {
+        include: {
+          sellerInventory: true,
+        },
+      },
+    },
+  });
+
+  if (!order) {
+    throw new Error("Unauthorized to update this order's status");
+  }
+
+  if (user.role === "SELLER") {
+    const hasSellerProduct = order.orderItems.some((item) => {
+      return item.sellerInventory.sellerId === user.id;
+    });
+
+    if (!hasSellerProduct) {
+      throw new Error("Unauthorized to update this order's status");
+    }
+  }
+
+  return await prisma.order.update({
+    where: { id: orderId },
+    data: {status},
+  });
+};
+
 export const orderService = {
   createOrder,
   getCustomerOrders,
   getOrderById,
+  getSellerOrders,
+  updateOrderStatus,
 };

@@ -5,10 +5,18 @@ import { orderController } from "./order.controller";
 
 const router = express.Router();
 
-router.post("/", auth.apply(Role.CUSTOMER), orderController.createOrder);
+router.post("/", auth(Role.CUSTOMER), orderController.createOrder);
 
-router.get("/", auth.apply(Role.CUSTOMER), orderController.getCustomerOrders);
+router.get("/", auth(Role.CUSTOMER), orderController.getCustomerOrders);
+
+router.get("/seller", auth(Role.SELLER), orderController.getSellerOrders);
 
 router.get("/:id", auth(), orderController.getOrderById);
+
+router.patch(
+  "/seller/:id",
+  auth(Role.SELLER, Role.ADMIN),
+  orderController.updateOrderStatus,
+);
 
 export const orderRouter = router;

@@ -60,10 +60,7 @@ const getOrderById = async (
       throw new Error("User information is missing from token");
     }
 
-    const result = await orderService.getOrderById(
-      id as string,
-      user,
-    );
+    const result = await orderService.getOrderById(id as string, user);
 
     res.status(200).json({
       success: true,
@@ -75,8 +72,63 @@ const getOrderById = async (
   }
 };
 
+const getSellerOrders = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const sellerId = req.user?.id;
+
+    if (!sellerId) {
+      throw new Error("Seller ID is missing from token");
+    }
+
+    const result = await orderService.getSellerOrders(sellerId as string);
+    res.status(200).json({
+      success: true,
+      message: "Seller orders retrieved successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+const updateOrderStatus = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const user = req.user;
+
+    if (!user) {
+      throw new Error("User information is missing from token");
+    }
+
+    const result = await orderService.updateOrderStatus(
+      id as string,
+      user,
+      status,
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Order status updated successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 export const orderController = {
   createOrder,
   getCustomerOrders,
-  getOrderById
+  getOrderById,
+  getSellerOrders,
+  updateOrderStatus,
 };
