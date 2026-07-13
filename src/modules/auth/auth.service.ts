@@ -118,6 +118,9 @@ const getCurrentUser = async (id: string) => {
   return user;
 };
 
+
+
+
 export const authService = {
   signUpUser,
   signInUser,
