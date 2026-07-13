@@ -72,12 +72,33 @@ const createOrder = async (
           create: orderItemsData,
         },
       },
-      include: {
+      select: {
+        id: true,
+        customerId: true,
+        totalAmount: true,
+        shipping_Address: true,
+        status: true,
+        createdAt: true,
         orderItems: {
-          include: {
+          select: {
+            id: true,
+            quantity: true,
+            price: true,
             sellerInventory: {
-              include: {
-                medicines: true,
+              select: {
+                id: true,
+                price: true,
+                stock: true,
+                medicines: {
+                  select: {
+                    id: true,
+                    title: true,
+                    genericName: true,
+                    strength: true,
+                    image: true,
+                    manufacturer: true,
+                  },
+                },
               },
             },
           },
@@ -94,12 +115,33 @@ const getCustomerOrders = async (customerId: string) => {
     where: {
       customerId,
     },
-    include: {
+    select: {
+      id: true,
+      customerId: true,
+      totalAmount: true,
+      shipping_Address: true,
+      status: true,
+      createdAt: true,
       orderItems: {
-        include: {
+        select: {
+          id: true,
+          quantity: true,
+          price: true,
           sellerInventory: {
-            include: {
-              medicines: true,
+            select: {
+              id: true,
+              price: true,
+              stock: true,
+              medicines: {
+                select: {
+                  id: true,
+                  title: true,
+                  genericName: true,
+                  strength: true,
+                  image: true,
+                  manufacturer: true,
+                },
+              },
             },
           },
         },
@@ -122,12 +164,33 @@ const getOrderById = async (
     where: {
       id,
     },
-    include: {
+    select: {
+      id: true,
+      customerId: true,
+      totalAmount: true,
+      shipping_Address: true,
+      status: true,
+      createdAt: true,
       orderItems: {
-        include: {
+        select: {
+          id: true,
+          quantity: true,
+          price: true,
           sellerInventory: {
-            include: {
-              medicines: true,
+            select: {
+              id: true,
+              price: true,
+              stock: true,
+              medicines: {
+                select: {
+                  id: true,
+                  title: true,
+                  genericName: true,
+                  strength: true,
+                  image: true,
+                  manufacturer: true,
+                },
+              },
             },
           },
         },
@@ -157,27 +220,48 @@ const getSellerOrders = async (sellerId: string) => {
         },
       },
     },
-    include: {
-      orderItems: {
-        where: {
-          sellerInventory: {
-            sellerId: sellerId,
-          },
-        },
-        include: {
-          sellerInventory: {
-            include: {
-              medicines: true,
-            },
-          },
-        },
-      },
+    select: {
+      id: true,
+      customerId: true,
+      totalAmount: true,
+      shipping_Address: true,
+      status: true,
+      createdAt: true,
       customer: {
         select: {
           id: true,
           name: true,
           email: true,
           phone: true,
+        },
+      },
+      orderItems: {
+        where: {
+          sellerInventory: {
+            sellerId: sellerId,
+          },
+        },
+        select: {
+          id: true,
+          quantity: true,
+          price: true,
+          sellerInventory: {
+            select: {
+              id: true,
+              price: true,
+              stock: true,
+              medicines: {
+                select: {
+                  id: true,
+                  title: true,
+                  genericName: true,
+                  strength: true,
+                  image: true,
+                  manufacturer: true,
+                },
+              },
+            },
+          },
         },
       },
     },
