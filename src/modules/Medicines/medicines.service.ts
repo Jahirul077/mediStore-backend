@@ -36,17 +36,16 @@ const getAllMedicines = async (query: any) => {
 
   return await prisma.medicines.findMany({
     where: whereConditions,
-    include: {
-      categories: true,
-      inventories: {
-        include: {
-          seller: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
+    select: {
+      id: true,
+      title: true,
+      genericName: true,
+      strength: true,
+      image: true,
+      categories: {
+        select: {
+          id: true,
+          title: true,
         },
       },
     },
@@ -58,25 +57,30 @@ const getMedicineById = async (id: string) => {
     where: {
       id,
     },
-    include: {
-      categories: true,
+    select: {
+      id: true,
+      title: true,
+      genericName: true,
+      strength: true,
+      description: true,
+      image: true,
+      manufacturer: true,
+      categories: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
       inventories: {
-        include: {
+        select: {
+          id: true,
+          price: true,
+          stock: true,
           seller: {
             select: {
               id: true,
               name: true,
               email: true,
-            },
-          },
-        },
-      },
-      reviews: {
-        include: {
-          customer: {
-            select: {
-              id: true,
-              name: true,
             },
           },
         },

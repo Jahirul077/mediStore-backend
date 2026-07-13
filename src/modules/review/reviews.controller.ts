@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { AuthRequest } from "../../middlewares/auth";
 import { reviewsService } from "./reviews.service";
 
@@ -80,8 +80,28 @@ const deleteReview = async (
   }
 };
 
+const getReviewsByMedicineId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    const result = await reviewsService.getReviewsByMedicineId(id as string);
+
+    res.status(200).json({
+      success: true,
+      message: "Reviews retrieved successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 export const reviewsController = {
   createReview,
   updateReview,
   deleteReview,
+  getReviewsByMedicineId,
 };

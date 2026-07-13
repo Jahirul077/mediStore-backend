@@ -102,8 +102,32 @@ const deleteReview = async (
   });
 };
 
+const getReviewsByMedicineId = async (medicineId: string) => {
+  return await prisma.review.findMany({
+    where: {
+      medicinesId: medicineId,
+    },
+    select: {
+      id: true,
+      rating: true,
+      comment: true,
+      createdAt: true,
+      customer: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+};
+
 export const reviewsService = {
   createReview,
   updateReview,
   deleteReview,
+  getReviewsByMedicineId,
 };

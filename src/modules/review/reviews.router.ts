@@ -15,4 +15,6 @@ router.delete(
   reviewsController.deleteReview,
 );
 
+router.get("/:id", reviewsController.getReviewsByMedicineId);
+
 export const reviewsRouter = router;
