@@ -65,8 +65,29 @@ const getCurrentUser = async (req: AuthRequest, res: Response) => {
   }
 };
 
+const logoutUser = async (req: Request, res: Response) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "User logged out successfully",
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      success: false,
+      message: error.message || "Failed to logout user",
+    });
+  }
+};
+
 export const authController = {
   signUpUser,
   signInUser,
   getCurrentUser,
+  logoutUser,
 };
