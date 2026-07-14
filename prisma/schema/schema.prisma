@@ -30,3 +30,10 @@ enum OrderStatus {
   DELIVERED
   CANCELLED
 }
+
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
