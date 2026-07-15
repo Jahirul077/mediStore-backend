@@ -7,13 +7,21 @@ const createPaymentIntent = async (
   next: NextFunction,
 ) => {
   try {
-    const { orderId } = req.body;
+    const { orderId, successUrl, cancelUrl } = req.body;
 
     if (!orderId) {
       throw new Error("Order Id is required");
     }
 
-    const result = await paymentService.createPaymentIntent(orderId);
+    if (!successUrl || !cancelUrl) {
+      throw new Error("successUrl and cancelUrl are required");
+    }
+
+    const result = await paymentService.createPaymentIntent(
+      orderId,
+      successUrl,
+      cancelUrl,
+    );
 
     res.status(200).json({
       success: true,
@@ -25,6 +33,31 @@ const createPaymentIntent = async (
   }
 };
 
+const handleWebhook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const signature = req.headers["stripe-signature"] as string;
+
+    const rawBody = (req as any).rawBody;
+
+    if (!rawBody || !signature) {
+      res.status(400).send("Missing raw body or signature");
+      return;
+    }
+
+    await paymentService.handleWebhook(rawBody, signature);
+
+    res.status(200).json({ received: true });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const paymentController = {
   createPaymentIntent,
+  handleWebhook
 };

@@ -5,12 +5,8 @@ import { paymentController } from "./payment.controller";
 
 const router = express.Router();
 
-router.post(
-  "/",
-  auth(Role.CUSTOMER),
-  paymentController.createPaymentIntent,
-);
+router.post("/", auth(Role.CUSTOMER), paymentController.createPaymentIntent);
 
-
+router.post("/webhook", paymentController.handleWebhook);
 
 export const paymentRouter = router;

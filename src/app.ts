@@ -12,7 +12,18 @@ import { paymentRouter } from "./modules/Payment/payment.router";
 
 const app: Application = express();
 
-app.use(express.json());
+// app.use(express.json());
+
+app.use(
+  express.json({
+    verify: (req: any, res, buf) => {
+      if (req.originalUrl.startsWith("/api/payment/webhook")) {
+        req.rawBody = buf;
+      }
+    },
+  }),
+);
+
 app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
