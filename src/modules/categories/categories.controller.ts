@@ -25,11 +25,19 @@ const getAllCategories = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await categoriesService.getAllCategories();
+    const options = {
+      page: req.query.page ? Number(req.query.page) : 1,
+      limit: req.query.limit ? Number(req.query.limit) : 10,
+      sortBy: req.query.sortBy as string,
+      sortOrder: req.query.sortOrder as "asc" | "desc",
+    };
+
+    const result = await categoriesService.getAllCategories(options);
     res.status(200).json({
       success: true,
       message: "Categories retrieved successfully",
-      data: result,
+      data: result.data,
+      meta: result.meta,
     });
   } catch (error: any) {
     next(error);

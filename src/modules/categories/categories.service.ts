@@ -1,3 +1,4 @@
+import { paginationHelper } from "../../helpers/paginationHelper";
 import { prisma } from "../../lib/prisma";
 
 const createCategory = async (payload: any) => {
@@ -29,8 +30,29 @@ const createCategory = async (payload: any) => {
   });
 };
 
-const getAllCategories = async () => {
-  return await prisma.categories.findMany();
+const getAllCategories = async (options: any) => {
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginationHelper.calculatePagination(options);
+
+  const result = await prisma.categories.findMany({
+    skip,
+    take: limit,
+    orderBy: {
+      [sortBy]: sortOrder,
+    },
+  });
+
+  const total = await prisma.categories.count();
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+    data: result,
+  };
 };
 
 const updateCategory = async (id: string, payload: any) => {
@@ -80,13 +102,3 @@ export const categoriesService = {
   updateCategory,
   deleteCategory,
 };
-
-
-
-
-
-
-
-
-
-
