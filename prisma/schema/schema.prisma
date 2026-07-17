@@ -37,3 +37,9 @@ enum PaymentStatus {
   COMPLETED
   FAILED
 }
+
+
+enum CategoryStatus {
+    ACTIVE
+    DISABLED
+}

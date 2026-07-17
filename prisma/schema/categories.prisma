@@ -1,8 +1,10 @@
 model Categories {
-    id        String   @id @default(uuid())
-    title     String   @db.VarChar(300)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id          String         @id @default(uuid())
+    title       String         @db.VarChar(300)
+    description String?         @db.Text
+    status      CategoryStatus @default(ACTIVE)
+    createdAt   DateTime       @default(now())
+    updatedAt   DateTime       @updatedAt
 
     medicines Medicines[]
 
