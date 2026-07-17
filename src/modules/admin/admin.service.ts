@@ -47,6 +47,23 @@ const updateUserStatus = async (userId: string, status: UserStatus) => {
   });
 };
 
+const getDashboardStats = async () => {
+
+  const totalRevenueResult = await prisma.order.aggregate({
+    where: {
+      paymentStatus: "COMPLETED",
+    },
+    _sum:{
+      totalAmount: true,
+    },
+  });
+
+  const totalRevenue = totalRevenueResult._sum.totalAmount ? 
+
+  Number(totalRevenueResult._sum.totalAmount) : 0;
+
+};
+
 export const adminService = {
   getAllUsers,
   updateUserStatus,
