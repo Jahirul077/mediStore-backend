@@ -90,7 +90,39 @@ const handleWebhook = async (rawBody: Buffer, signature: string) => {
   }
 };
 
+const verifyPayment = async (sessionId: string) => {
+  const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+  if (session?.payment_status === "paid") {
+    const orderId = session?.metadata?.orderId;
+
+    if (orderId) {
+      const updateOrder = await prisma.order.update({
+        where: {
+          id: orderId,
+        },
+        data: {
+          paymentStatus: "COMPLETED",
+          transactionId:
+            typeof session.payment_intent === "string"
+              ? session.payment_intent
+              : null,
+        },
+      });
+      return {
+        status: "paid",
+        order: updateOrder,
+      };
+    }
+  }
+
+  return {
+    status: session?.payment_status,
+  };
+};
+
 export const paymentService = {
   createPaymentIntent,
   handleWebhook,
+  verifyPayment,
 };
