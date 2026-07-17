@@ -9,6 +9,8 @@ router.post("/", auth(Role.ADMIN), categoriesController.createCategory);
 
 router.get("/", categoriesController.getAllCategories);
 
+router.patch("/:id", auth(Role.ADMIN), categoriesController.updateCategory);
+
 router.delete("/:id", auth(Role.ADMIN), categoriesController.deleteCategory);
 
 export const categoriesRouter = router;
