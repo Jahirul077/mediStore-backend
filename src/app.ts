@@ -8,10 +8,22 @@ import { categoriesRouter } from "./modules/categories/categories.router";
 import { orderRouter } from "./modules/Order/order.router";
 import { reviewsRouter } from "./modules/review/reviews.router";
 import { adminRouter } from "./modules/admin/admin.router";
+import { paymentRouter } from "./modules/Payment/payment.router";
 
 const app: Application = express();
 
-app.use(express.json());
+// app.use(express.json());
+
+app.use(
+  express.json({
+    verify: (req: any, res, buf) => {
+      if (req.originalUrl.startsWith("/api/payment/webhook")) {
+        req.rawBody = buf;
+      }
+    },
+  }),
+);
+
 app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
@@ -28,7 +40,7 @@ app.use("/api/review", reviewsRouter);
 
 app.use("/api/admin", adminRouter);
 
-
+app.use("/api/payment", paymentRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

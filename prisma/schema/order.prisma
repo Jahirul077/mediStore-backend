@@ -1,12 +1,15 @@
 model Order {
-    id               String      @id @default(uuid())
+    id               String        @id @default(uuid())
     customerId       String
-    customer         User        @relation(fields: [customerId], references: [id])
-    totalAmount      Decimal     @db.Decimal()
+    customer         User          @relation(fields: [customerId], references: [id])
+    totalAmount      Decimal       @db.Decimal()
     shipping_Address String
-    status           OrderStatus @default(PLACED)
-    createdAt        DateTime    @default(now())
-    updatedAt        DateTime    @updatedAt
+    status           OrderStatus   @default(PLACED)
+    paymentStatus    PaymentStatus @default(PENDING)
+    paymentIntentId  String?
+    transactionId    String?
+    createdAt        DateTime      @default(now())
+    updatedAt        DateTime      @updatedAt
     orderItems       OrderItem[]
 
     @@map("order")
