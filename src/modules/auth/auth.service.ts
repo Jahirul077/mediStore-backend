@@ -118,11 +118,107 @@ const getCurrentUser = async (id: string) => {
   return user;
 };
 
+const forgotPassword = async (email: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
 
+  if (!user) {
+    throw new Error("User does not exist");
+  }
 
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+  await prisma.verification.deleteMany({
+    where: {
+      identifier: email,
+    },
+  });
+
+  const result = await prisma.verification.create({
+    data: {
+      identifier: email,
+      value: otp,
+      expiresAt,
+    },
+  });
+
+  return {
+    email: result.identifier,
+    otp: result.value,
+    expiresAt: result.expiresAt,
+  };
+};
+
+const verifyOtp = async (email: string, otp: string) => {
+  if (!email || !otp) {
+    throw new Error("Email and OTP are required");
+  }
+
+  const verification = await prisma.verification.findFirst({
+    where: {
+      identifier: email,
+      value: otp,
+    },
+  });
+
+  if (!verification) {
+    throw new Error("Invalid OTP");
+  }
+
+  if (new Date() > verification.expiresAt) {
+    throw new Error("OTP has expired. Please request a new one.");
+  }
+
+  return true;
+};
+
+const resetPassword = async (payload: {
+  email: string;
+  otp: string;
+  newPassword: string;
+}) => {
+  const { email, otp, newPassword } = payload;
+
+  if (!email || !otp || !newPassword) {
+    throw new Error("Email, OTP and new password are required");
+  }
+
+  await verifyOtp(email, otp);
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  const updatedUser = await prisma.user.update({
+    where: {
+      email,
+    },
+    data: {
+      password: hashedPassword,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+    },
+  });
+
+  await prisma.verification.deleteMany({
+    where: {
+      identifier: email,
+    },
+  });
+
+  return updatedUser;
+};
 
 export const authService = {
   signUpUser,
   signInUser,
   getCurrentUser,
+  forgotPassword,
+  verifyOtp,
+  resetPassword,
 };
