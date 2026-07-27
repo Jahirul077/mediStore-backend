@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { authService } from "./auth.service";
 import { AuthRequest } from "../../middlewares/auth";
 
@@ -85,9 +85,64 @@ const logoutUser = async (req: Request, res: Response) => {
   }
 };
 
+const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { email } = req.body;
+
+    const result = await authService.forgotPassword(email);
+
+    res.status(200).json({
+      success: true,
+      message: "6-Digit OTP sent successfully to your email. Valid for 5 minutes.",
+      data: result,
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+const verifyOtp = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, otp } = req.body;
+
+    const result = await authService.verifyOtp(email, otp);
+    res.status(200).json({
+      success: true,
+      message: "OTP verified successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await authService.resetPassword(req.body);
+    res.status(200).json({
+      success: true,
+      message: "Password reset successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const authController = {
   signUpUser,
   signInUser,
   getCurrentUser,
   logoutUser,
+  forgotPassword,
+  verifyOtp,
+  resetPassword,
 };

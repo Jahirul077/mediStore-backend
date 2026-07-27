@@ -104,9 +104,31 @@ const deleteMedicineFromInventory = async (
   }
 };
 
+const getSellerDashboardStats = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const sellerId = req.user?.id;
+
+    const result = await sellerService.getSellerDashboardStats(
+      sellerId as string,
+    );
+    res.status(200).json({
+      success: true,
+      message: "Seller dashboard stats retrieved successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 export const sellerController = {
   addMedicineToInventory,
   getSellerInventory,
   updateMedicineInInventory,
   deleteMedicineFromInventory,
+  getSellerDashboardStats,
 };
