@@ -47,7 +47,79 @@ const updateUserStatus = async (userId: string, status: UserStatus) => {
   });
 };
 
+const getDashboardStats = async () => {
+  const totalRevenueResult = await prisma.order.aggregate({
+    where: {
+      paymentStatus: "COMPLETED",
+    },
+    _sum: {
+      totalAmount: true,
+    },
+  });
+
+  const totalRevenue = totalRevenueResult._sum.totalAmount
+    ? Number(totalRevenueResult._sum.totalAmount)
+    : 0;
+
+  const totalOrders = await prisma.order.count();
+
+  const totalSellers = await prisma.user.count({
+    where: {
+      role: Role.SELLER,
+    },
+  });
+
+  const totalCustomers = await prisma.user.count({
+    where: {
+      role: Role.CUSTOMER,
+    },
+  });
+
+  return {
+    totalRevenue,
+    totalOrders,
+    totalSellers,
+    totalCustomers,
+  };
+};
+
+const getAllOrders = async () => {
+  return await prisma.order.findMany({
+    include: {
+      customer: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+        },
+      },
+      orderItems: {
+        include: {
+          sellerInventory: {
+            include: {
+              medicines: true,
+              seller: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+    },
+  });
+};
+
 export const adminService = {
   getAllUsers,
   updateUserStatus,
+  getDashboardStats,
+  getAllOrders
 };

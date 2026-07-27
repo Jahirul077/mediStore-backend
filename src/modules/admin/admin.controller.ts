@@ -39,7 +39,45 @@ const updateUserStatus = async (
   }
 };
 
+const getDashboardStats = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await adminService.getDashboardStats();
+
+    res.status(200).json({
+      success: true,
+      message: "Dashboard stats retrieved successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+
+const getAllOrders = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await adminService.getAllOrders();
+    res.status(200).json({
+      success: true,
+      message: "All global orders retrieved successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 export const adminController = {
   getAllUsers,
   updateUserStatus,
+  getDashboardStats,
+  getAllOrders,
 };
