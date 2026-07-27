@@ -149,11 +149,83 @@ const deleteMedicineFromInventory = async (
     },
   });
 };
- 
+
+const getSellerDashboardStats = async (sellerId: string) => {
+  const medicinesCount = await prisma.sellerInventory.count({
+    where: {
+      sellerId,
+    },
+  });
+  const sellerOrders = await prisma.order.findMany({
+    where: {
+      orderItems: {
+        some: {
+          sellerInventory: {
+            sellerId,
+          },
+        },
+      },
+    },
+    include: {
+      customer: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+        },
+      },
+      orderItems: {
+        where: {
+          sellerInventory: {
+            sellerId,
+          },
+        },
+        include: {
+          sellerInventory: {
+            include: {
+              medicines: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  let pendingOrdersCount = 0;
+  let completedOrdersCount = 0;
+  let totalRevenue = 0;
+
+  sellerOrders.forEach((order) => {
+    if (order.status === "PLACED" || order.status === "PROCESSING") {
+      pendingOrdersCount++;
+    } else if (order.status === "DELIVERED") {
+      completedOrdersCount++;
+    }
+
+    if (order.paymentStatus === "COMPLETED" || order.status === "DELIVERED") {
+      order.orderItems.forEach((item) => {
+        totalRevenue += Number(item.sellerInventory.price) * item.quantity;
+      });
+    }
+  });
+
+  return {
+    medicinesCount,
+    pendingOrdersCount,
+    completedOrdersCount,
+    totalRevenue,
+    recentOrders: sellerOrders.slice(0, 5),
+  };
+};
 
 export const sellerService = {
   addMedicineToInventory,
   getSellerInventory,
   updateMedicineInInventory,
   deleteMedicineFromInventory,
+  getSellerDashboardStats,
 };

@@ -29,4 +29,10 @@ router.delete(
   sellerController.deleteMedicineFromInventory,
 );
 
+router.get(
+  "/stats",
+  auth(Role.SELLER, Role.ADMIN),
+  sellerController.getSellerDashboardStats,
+);
+
 export const sellerRouter = router;
