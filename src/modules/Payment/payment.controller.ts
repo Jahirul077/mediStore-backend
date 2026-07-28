@@ -13,14 +13,16 @@ const createPaymentIntent = async (
       throw new Error("Order Id is required");
     }
 
-    if (!successUrl || !cancelUrl) {
-      throw new Error("successUrl and cancelUrl are required");
-    }
+    const defaultOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
+    const targetSuccessUrl =
+      successUrl || `${defaultOrigin.replace(/\/$/, "")}/payment/success`;
+    const targetCancelUrl =
+      cancelUrl || `${defaultOrigin.replace(/\/$/, "")}/payment/cancel`;
 
     const result = await paymentService.createPaymentIntent(
       orderId,
-      successUrl,
-      cancelUrl,
+      targetSuccessUrl,
+      targetCancelUrl,
     );
 
     res.status(200).json({
