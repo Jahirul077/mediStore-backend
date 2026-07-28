@@ -21,9 +21,12 @@ const createOrder = async (
     const orderItemsData = [];
 
     for (const item of items) {
+      const targetInventoryId =
+        item.SellerInventoryId || (item as any).sellerInventoryId;
+
       const inventory = await tx.sellerInventory.findUnique({
         where: {
-          id: item.SellerInventoryId,
+          id: targetInventoryId,
         },
         include: {
           medicines: true,
@@ -50,14 +53,14 @@ const createOrder = async (
       totalAmount += itemTotal;
 
       orderItemsData.push({
-        sellerInventoryId: item.SellerInventoryId,
+        sellerInventoryId: targetInventoryId,
         quantity: item.quantity,
         price: itemPrice,
       });
 
       await tx.sellerInventory.update({
         where: {
-          id: item.SellerInventoryId,
+          id: targetInventoryId,
         },
         data: {
           stock: {
@@ -307,7 +310,7 @@ const updateOrderStatus = async (
 
   return await prisma.order.update({
     where: { id: orderId },
-    data: {status},
+    data: { status },
   });
 };
 
