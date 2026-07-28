@@ -24,12 +24,6 @@ const createOrder = async (
       const targetInventoryId =
         item.SellerInventoryId || (item as any).sellerInventoryId;
 
-      if (!targetInventoryId) {
-        const err: any = new Error("Inventory ID is required for each order item");
-        err.statusCode = 400;
-        throw err;
-      }
-
       const inventory = await tx.sellerInventory.findUnique({
         where: {
           id: targetInventoryId,
@@ -316,7 +310,7 @@ const updateOrderStatus = async (
 
   return await prisma.order.update({
     where: { id: orderId },
-    data: {status},
+    data: { status },
   });
 };
 
