@@ -19,7 +19,6 @@ app.use(
       "http://localhost:3000",
       "http://localhost:3001",
       "https://medistore-frontend-live.vercel.app",
-      "https://medistore-frontend-live.vercel.app/",
       process.env.FRONTEND_URL || "",
     ].filter(Boolean),
     credentials: true,
