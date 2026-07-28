@@ -21,9 +21,18 @@ const createOrder = async (
     const orderItemsData = [];
 
     for (const item of items) {
+      const targetInventoryId =
+        item.SellerInventoryId || (item as any).sellerInventoryId;
+
+      if (!targetInventoryId) {
+        const err: any = new Error("Inventory ID is required for each order item");
+        err.statusCode = 400;
+        throw err;
+      }
+
       const inventory = await tx.sellerInventory.findUnique({
         where: {
-          id: item.SellerInventoryId,
+          id: targetInventoryId,
         },
         include: {
           medicines: true,
@@ -50,14 +59,14 @@ const createOrder = async (
       totalAmount += itemTotal;
 
       orderItemsData.push({
-        sellerInventoryId: item.SellerInventoryId,
+        sellerInventoryId: targetInventoryId,
         quantity: item.quantity,
         price: itemPrice,
       });
 
       await tx.sellerInventory.update({
         where: {
-          id: item.SellerInventoryId,
+          id: targetInventoryId,
         },
         data: {
           stock: {
