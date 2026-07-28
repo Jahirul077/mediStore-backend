@@ -1,5 +1,6 @@
 import express, { Application } from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import { authRouter } from "./modules/auth/auth.router";
 import { sellerRouter } from "./modules/seller/seller.router";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
@@ -11,6 +12,17 @@ import { adminRouter } from "./modules/admin/admin.router";
 import { paymentRouter } from "./modules/Payment/payment.router";
 
 const app: Application = express();
+
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      process.env.FRONTEND_URL || "",
+    ].filter(Boolean),
+    credentials: true,
+  }),
+);
 
 // app.use(express.json());
 
