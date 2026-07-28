@@ -48,6 +48,13 @@ const getAllMedicines = async (query: any) => {
           title: true,
         },
       },
+      inventories: {
+        select: {
+          id: true,
+          price: true,
+          stock: true,
+        },
+      },
     },
   });
 };
@@ -95,7 +102,39 @@ const getMedicineById = async (id: string) => {
   return medicine;
 };
 
+const getFeaturedMedicines = async () => {
+  const featuredMedicines = await prisma.medicines.findMany({
+    where: {
+      isFeatured: true,
+    },
+    take: 4,
+    select: {
+      id: true,
+      title: true,
+      genericName: true,
+      strength: true,
+      image: true,
+      categories: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+      inventories: {
+        select: {
+          id: true,
+          price: true,
+          stock: true,
+        },
+      },
+    },
+  });
+
+  return featuredMedicines;
+};
+
 export const medicinesService = {
   getAllMedicines,
   getMedicineById,
+  getFeaturedMedicines,
 };

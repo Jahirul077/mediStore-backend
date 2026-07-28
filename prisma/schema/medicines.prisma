@@ -4,6 +4,7 @@ model Medicines {
     genericName  String?  @db.VarChar(300)
     strength     String?  @db.VarChar(50)
     description  String   @db.Text
+    isFeatured   Boolean  @default(false)
     image        String
     manufacturer String   @db.VarChar(200)
     createdAt    DateTime @default(now())
