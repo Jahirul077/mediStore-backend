@@ -6,6 +6,7 @@ const addMedicineToInventory = async (sellerId: string, payload: any) => {
     genericName,
     strength,
     description,
+    isFeatured,
     image,
     manufacturer,
     categoriesId,
@@ -45,6 +46,7 @@ const addMedicineToInventory = async (sellerId: string, payload: any) => {
         genericName,
         strength,
         description,
+        isFeatured: isFeatured !== undefined ? (isFeatured === true || isFeatured === "true") : false,
         image,
         manufacturer,
         categories: {
@@ -104,6 +106,7 @@ const updateMedicineInInventory = async (
     genericName,
     strength,
     description,
+    isFeatured,
     image,
     manufacturer,
     categoriesId,
@@ -123,6 +126,7 @@ const updateMedicineInInventory = async (
           genericName: genericName !== undefined ? genericName : undefined,
           strength: strength !== undefined ? strength : undefined,
           description: description !== undefined ? description : undefined,
+          isFeatured: isFeatured !== undefined ? (isFeatured === true || isFeatured === "true") : undefined,
           image: image !== undefined ? image : undefined,
           manufacturer: manufacturer !== undefined ? manufacturer : undefined,
           categories:

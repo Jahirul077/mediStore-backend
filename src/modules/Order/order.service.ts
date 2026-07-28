@@ -31,13 +31,17 @@ const createOrder = async (
       });
 
       if (!inventory) {
-        throw new Error("Inventory not found");
+        const err: any = new Error("Inventory not found for one or more items");
+        err.statusCode = 400;
+        throw err;
       }
 
       if (inventory.stock < item.quantity) {
-        throw new Error(
-          `Insufficient stock for medicine: ${inventory.medicines.title}`,
+        const err: any = new Error(
+          `Insufficient stock for medicine: ${inventory.medicines.title}`
         );
+        err.statusCode = 400;
+        throw err;
       }
 
       const itemPrice = Number(inventory.price);

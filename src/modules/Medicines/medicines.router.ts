@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.get("/", medicinesController.getAllMedicines);
 
+router.get("/featured", medicinesController.getFeaturedMedicines);
+
 router.get("/:id", medicinesController.getMedicineById);
 
 

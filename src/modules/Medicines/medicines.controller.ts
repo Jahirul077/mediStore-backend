@@ -38,7 +38,25 @@ const getMedicineById = async (
   }
 };
 
+const getFeaturedMedicines = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await medicinesService.getFeaturedMedicines();
+    res.status(200).json({
+      success: true,
+      message: "Featured Medicines retrieved successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 export const medicinesController = {
   getAllMedicines,
-  getMedicineById
+  getMedicineById,
+  getFeaturedMedicines,
 };
